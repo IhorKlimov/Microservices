@@ -16,6 +16,11 @@ eval $(minikube docker-env)\
 && kubectl apply -f k8s/service3/service.yaml\
 && kubectl apply -f k8s/service3/ingress.yaml\
 \
+&& docker build -t service4:0.1 -f services/service4/Dockerfile .\
+&& kubectl apply -f k8s/service4/deployment.yaml\
+&& kubectl apply -f k8s/service4/service.yaml\
+&& kubectl apply -f k8s/service4/ingress.yaml\
+\
 && docker build -t client:0.1 -f client/Dockerfile .\
 && kubectl apply -f k8s/client/deployment.yaml\
 && kubectl apply -f k8s/client/service.yaml\

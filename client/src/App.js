@@ -16,6 +16,7 @@ function App() {
     const [service1state, service1SetState] = useState(UNKNOWN);
     const [service2state, service2SetState] = useState(UNKNOWN);
     const [service3state, service3SetState] = useState(UNKNOWN);
+    const [service4state, service4SetState] = useState(UNKNOWN);
 
     const [clientSecret, setClientSecret] = useState("");
 
@@ -74,11 +75,24 @@ function App() {
         });
     }, []);
 
+    useEffect(() => {
+        fetch('/api/service4/ping')
+            .then((response) => {
+                return response.text();
+            })
+            .then((data) => {
+                service4SetState(data);
+            }).catch(() => {
+            service4SetState(UNAVAILABLE)
+        });
+    }, []);
+
     return (
         <div className="App">
             service1 status: {service1state}<br/>
             service2 status: {service2state}<br/>
-            service3 status: {service3state}
+            service3 status: {service3state}<br/>
+            service4 status: {service4state}
             {clientSecret && (
                 <Elements options={options} stripe={stripePromise}>
                     <CheckoutForm/>
