@@ -1,9 +1,22 @@
 import {useEffect, useState} from "react";
 import {loadStripe} from "@stripe/stripe-js";
 import {Elements} from "@stripe/react-stripe-js";
-
+import {initializeApp} from "firebase/app";
+import {getAuth, signInAnonymously, onAuthStateChanged} from "firebase/auth";
 import CheckoutForm from "./CheckoutForm";
 import "./App.css";
+
+const app = initializeApp({
+    apiKey: "AIzaSyByVyCIMLVlmMGhV7BdYtKku2IA0uhAxpk",
+    authDomain: "microserviceschat.firebaseapp.com",
+    projectId: "microserviceschat",
+    storageBucket: "microserviceschat.appspot.com",
+    messagingSenderId: "280567237801",
+    appId: "1:280567237801:web:c31b67ec3c75bdab5dadb8",
+    measurementId: "G-D54ESTMTYY"
+});
+
+const auth = getAuth(app);
 
 const UNKNOWN = "UNKNOWN"
 const UNAVAILABLE = "UNAVAILABLE"
@@ -19,6 +32,26 @@ function App() {
     const [service4state, service4SetState] = useState(UNKNOWN);
 
     const [clientSecret, setClientSecret] = useState("");
+
+    signInAnonymously(auth)
+        .then(() => {
+            console.log("Authenticated")
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode + " " + errorMessage);
+        });
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            const uid = user.uid;
+            console.log("Logged in user " + uid);
+        } else {
+            // User is signed out
+            console.log("Not logged in");
+        }
+    });
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
