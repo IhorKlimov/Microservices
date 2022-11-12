@@ -7,9 +7,9 @@
 ### Open the first terminal window and enter your laptop's password
 
 ### Verify correct service functioning by opening in your browser these links:
-    localhost/api/service3/ping
-    localhost/api/service4/ping
-    localhost/api/service5/ping
-    localhost/api/service6/ping
-    localhost/api/service7/ping
+    localhost/api/payments/ping
+    localhost/api/chat/ping
+    localhost/api/notifications/ping
+    localhost/api/goods/ping
+    localhost/api/tracking/ping
     localhost

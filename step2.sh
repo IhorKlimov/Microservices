@@ -1,30 +1,30 @@
 eval $(minikube docker-env)\
 && minikube addons enable ingress\
 \
-&& docker build -t service3:0.1 -f services/service3/Dockerfile .\
-&& kubectl apply -f k8s/service3/deployment.yaml\
-&& kubectl apply -f k8s/service3/service.yaml\
-&& kubectl apply -f k8s/service3/ingress.yaml\
+&& docker build -t payments:0.1 -f services/payments/Dockerfile .\
+&& kubectl apply -f k8s/payments/deployment.yaml\
+&& kubectl apply -f k8s/payments/service.yaml\
+&& kubectl apply -f k8s/payments/ingress.yaml\
 \
-&& docker build -t service4:0.1 -f services/service4/Dockerfile .\
-&& kubectl apply -f k8s/service4/deployment.yaml\
-&& kubectl apply -f k8s/service4/service.yaml\
-&& kubectl apply -f k8s/service4/ingress.yaml\
+&& docker build -t chat:0.1 -f services/chat/Dockerfile .\
+&& kubectl apply -f k8s/chat/deployment.yaml\
+&& kubectl apply -f k8s/chat/service.yaml\
+&& kubectl apply -f k8s/chat/ingress.yaml\
 \
-&& docker build -t service5:0.1 -f services/service5/Dockerfile .\
-&& kubectl apply -f k8s/service5/deployment.yaml\
-&& kubectl apply -f k8s/service5/service.yaml\
-&& kubectl apply -f k8s/service5/ingress.yaml\
+&& docker build -t notifications:0.1 -f services/notifications/Dockerfile .\
+&& kubectl apply -f k8s/notifications/deployment.yaml\
+&& kubectl apply -f k8s/notifications/service.yaml\
+&& kubectl apply -f k8s/notifications/ingress.yaml\
 \
-&& docker build -t service6:0.1 -f services/service6/Dockerfile .\
-&& kubectl apply -f k8s/service6/deployment.yaml\
-&& kubectl apply -f k8s/service6/service.yaml\
-&& kubectl apply -f k8s/service6/ingress.yaml\
+&& docker build -t goods:0.1 -f services/goods/Dockerfile .\
+&& kubectl apply -f k8s/goods/deployment.yaml\
+&& kubectl apply -f k8s/goods/service.yaml\
+&& kubectl apply -f k8s/goods/ingress.yaml\
 \
-&& docker build -t service7:0.1 -f services/service7/Dockerfile .\
-&& kubectl apply -f k8s/service7/deployment.yaml\
-&& kubectl apply -f k8s/service7/service.yaml\
-&& kubectl apply -f k8s/service7/ingress.yaml\
+&& docker build -t tracking:0.1 -f services/tracking/Dockerfile .\
+&& kubectl apply -f k8s/tracking/deployment.yaml\
+&& kubectl apply -f k8s/tracking/service.yaml\
+&& kubectl apply -f k8s/tracking/ingress.yaml\
 \
 && docker build -t client:0.1 -f client/Dockerfile .\
 && kubectl apply -f k8s/client/deployment.yaml\

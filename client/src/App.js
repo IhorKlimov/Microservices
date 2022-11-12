@@ -26,8 +26,8 @@ const UNAVAILABLE = "UNAVAILABLE"
 const stripePromise = loadStripe("pk_test_51M1MDYLDgkaqfC6ZXyUZx7KeVKkq2P1iPdTtbFGErWxGc6LTTSa2f4r1nBY12gmsMTgMVDABqJjC4FL60Vs6PvOb00lgWZa3De");
 
 function App() {
-    const [service3state, service3SetState] = useState(UNKNOWN);
-    const [service4state, service4SetState] = useState(UNKNOWN);
+    const [paymentsstate, paymentsSetState] = useState(UNKNOWN);
+    const [chatstate, chatSetState] = useState(UNKNOWN);
 
     const [clientSecret, setClientSecret] = useState("");
 
@@ -53,7 +53,7 @@ function App() {
 
     useEffect(() => {
         // Create PaymentIntent as soon as the page loads
-        fetch("/api/service3/create-payment-intent", {
+        fetch("/api/payments/create-payment-intent", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({items: [{id: "xl-tshirt"}]}),
@@ -71,33 +71,33 @@ function App() {
     };
 
     useEffect(() => {
-        fetch('/api/service3/ping')
+        fetch('/api/payments/ping')
             .then((response) => {
                 return response.text();
             })
             .then((data) => {
-                service3SetState(data);
+                paymentsSetState(data);
             }).catch(() => {
-            service3SetState(UNAVAILABLE)
+            paymentsSetState(UNAVAILABLE)
         });
     }, []);
 
     useEffect(() => {
-        fetch('/api/service4/ping')
+        fetch('/api/chat/ping')
             .then((response) => {
                 return response.text();
             })
             .then((data) => {
-                service4SetState(data);
+                chatSetState(data);
             }).catch(() => {
-            service4SetState(UNAVAILABLE)
+            chatSetState(UNAVAILABLE)
         });
     }, []);
 
     return (
         <div className="App">
-            service3 status: {service3state}<br/>
-            service4 status: {service4state}
+            payments status: {paymentsstate}<br/>
+            chat status: {chatstate}
             {clientSecret && (
                 <Elements options={options} stripe={stripePromise}>
                     <CheckoutForm/>
