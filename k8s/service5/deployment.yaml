@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service5-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service5
+  template:
+    metadata:
+     labels:
+       app: service5
+    spec:
+      containers:
+        - image: service5:0.1
+          imagePullPolicy: Never
+          name: service5
+          ports:
+            - containerPort: 8080
