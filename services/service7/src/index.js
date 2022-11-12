@@ -21,41 +21,36 @@ initializeApp({
 const db = getFirestore();
 const port = 8080;
 
-app.get('/api/service6/ping', (req, res) => {
+app.get('/api/service7/ping', (req, res) => {
     res.send('Hello World!');
 });
 
-app.post('/api/service6/save-item', async (req, res) => {
-    const item = req.body.item;
+app.post('/api/service7/save-item-status', async (req, res) => {
+    const orderId = req.body.orderId;
+    const status = req.body.status;
 
-    let result = await saveItem(item);
-
-    res.send(result);
-});
-
-async function saveItem(item) {
     let result;
     try {
-        const snapshot = await db.collection('items').add({
-            item
-        });
+        const snapshot = await db.collection('orders').doc(orderId).set({
+            status
+        }, {merge: true});
         result = {"result": "Success"};
     } catch (e) {
         result = {"result": "Database is offline. Will retry later"};
     }
-    return result;
-}
 
-app.get('/api/service6/get-items', async (req, res) => {
-    // const userId = req.params.userId;
+    res.send(result);
+});
+
+app.get('/api/service7/get-order-status/:orderId', async (req, res) => {
+    const orderId = req.params.orderId;
 
     const result = [];
-    const snapshot = await db.collection('items').get();
-    snapshot.forEach(data => {
-        const d = data.data()
-        d["id"] = data.id;
-        result.push(d);
-    });
+    const snapshot = await db.collection('orders').doc(orderId).get();
+    const d = snapshot.data();
+    d["id"] = d.id;
+    result.push(d);
+
     console.log(snapshot);
     res.send({"messages": result});
 })
@@ -65,7 +60,7 @@ app.listen(port, () => {
 });
 
 
-// curl -X POST -H "Content-Type: application/json" -d "{  \"item\": {    \"category\": \"Category 1\",    \"title\": \"Item 1\",    \"price\": 150,    \"imageUrl\": \"https://www.lindt.ca/media/catalog/product/6/6/66209996d33cf86c5e4e04c8135a9560e8a1869d95203cdf55567a2167549186.jpeg?quality=80&fit=bounds&height=700&width=700&canvas=700:700\"  }}" localhost/api/service6/save-item
-// curl -X GET localhost/api/service6/get-items
+// curl -X POST -H "Content-Type: application/json" -d '{"status": "orderCreated", "orderId": "Gn23nGnwe3wC"}' localhost/api/service7/save-item-status
+// curl -X GET localhost/api/service7/get-order-status/Gn23nGnwe3wC
 
 
