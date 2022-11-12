@@ -26,8 +26,6 @@ const UNAVAILABLE = "UNAVAILABLE"
 const stripePromise = loadStripe("pk_test_51M1MDYLDgkaqfC6ZXyUZx7KeVKkq2P1iPdTtbFGErWxGc6LTTSa2f4r1nBY12gmsMTgMVDABqJjC4FL60Vs6PvOb00lgWZa3De");
 
 function App() {
-    const [service1state, service1SetState] = useState(UNKNOWN);
-    const [service2state, service2SetState] = useState(UNKNOWN);
     const [service3state, service3SetState] = useState(UNKNOWN);
     const [service4state, service4SetState] = useState(UNKNOWN);
 
@@ -73,30 +71,6 @@ function App() {
     };
 
     useEffect(() => {
-        fetch('/api/service1/ping')
-            .then((response) => {
-                return response.text();
-            })
-            .then((data) => {
-                service1SetState(data);
-            }).catch(() => {
-            service1SetState(UNAVAILABLE)
-        });
-    }, []);
-
-    useEffect(() => {
-        fetch('/api/service2/ping')
-            .then((response) => {
-                return response.text();
-            })
-            .then((data) => {
-                service2SetState(data);
-            }).catch(() => {
-            service2SetState(UNAVAILABLE)
-        });
-    }, []);
-
-    useEffect(() => {
         fetch('/api/service3/ping')
             .then((response) => {
                 return response.text();
@@ -122,8 +96,6 @@ function App() {
 
     return (
         <div className="App">
-            service1 status: {service1state}<br/>
-            service2 status: {service2state}<br/>
             service3 status: {service3state}<br/>
             service4 status: {service4state}
             {clientSecret && (
