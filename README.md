@@ -11,4 +11,7 @@
     localhost/api/service2/ping
     localhost/api/service3/ping
     localhost/api/service4/ping
+    localhost/api/service5/ping
+    localhost/api/service6/ping
+    localhost/api/service7/ping
     localhost
