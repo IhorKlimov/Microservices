@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     PaymentElement,
     useStripe,
     useElements
 } from "@stripe/react-stripe-js";
 
-export default function CheckoutForm() {
+export default function CheckoutForm(props) {
     const stripe = useStripe();
     const elements = useElements();
 
@@ -25,10 +25,24 @@ export default function CheckoutForm() {
             return;
         }
 
-        stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+        stripe.retrievePaymentIntent(clientSecret).then(({paymentIntent}) => {
             switch (paymentIntent.status) {
                 case "succeeded":
                     setMessage("Payment succeeded!");
+
+                    fetch("/api/payments/complete-payment", {
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: JSON.stringify(
+                            {
+                                orderId: props.orderId,
+                                userId: props.auth
+                            }
+                        ),
+                    })
+                        .then((response) => {
+                            console.log(response);
+                        });
                     break;
                 case "processing":
                     setMessage("Your payment is processing.");
@@ -54,7 +68,7 @@ export default function CheckoutForm() {
 
         setIsLoading(true);
 
-        const { error } = await stripe.confirmPayment({
+        const {error} = await stripe.confirmPayment({
             elements,
             confirmParams: {
                 // Make sure to change this to your payment completion page
@@ -78,7 +92,9 @@ export default function CheckoutForm() {
 
     return (
         <form id="payment-form" onSubmit={handleSubmit}>
-            <PaymentElement id="payment-element" />
+            <div>{props.orderId}</div>
+            <div>{props.auth}</div>
+            <PaymentElement id="payment-element"/>
             <button disabled={isLoading || !stripe || !elements} id="submit">
         <span id="button-text">
           {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}

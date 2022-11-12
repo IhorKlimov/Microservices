@@ -28,8 +28,9 @@ const stripePromise = loadStripe("pk_test_51M1MDYLDgkaqfC6ZXyUZx7KeVKkq2P1iPdTtb
 function App() {
     const [paymentsstate, paymentsSetState] = useState(UNKNOWN);
     const [chatstate, chatSetState] = useState(UNKNOWN);
-
+    const [currentUser, setCurrentUser] = useState(UNKNOWN);
     const [clientSecret, setClientSecret] = useState("");
+    const [orderId, setOrderId] = useState("");
 
     signInAnonymously(auth)
         .then(() => {
@@ -45,6 +46,7 @@ function App() {
         if (user) {
             const uid = user.uid;
             console.log("Logged in user " + uid);
+            setCurrentUser(uid);
         } else {
             // User is signed out
             console.log("Not logged in");
@@ -59,7 +61,10 @@ function App() {
             body: JSON.stringify({items: [{id: "xl-tshirt"}]}),
         })
             .then((res) => res.json())
-            .then((data) => setClientSecret(data.clientSecret));
+            .then((data) => {
+                setOrderId(data.orderId);
+                setClientSecret(data.clientSecret);
+            });
     }, []);
 
     const appearance = {
@@ -100,12 +105,10 @@ function App() {
             chat status: {chatstate}
             {clientSecret && (
                 <Elements options={options} stripe={stripePromise}>
-                    <CheckoutForm/>
+                    <CheckoutForm orderId={orderId} auth={currentUser}/>
                 </Elements>
             )}
-
         </div>
-
     );
 }
 
