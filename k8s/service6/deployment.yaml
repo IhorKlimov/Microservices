@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service6-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service6
+  template:
+    metadata:
+     labels:
+       app: service6
+    spec:
+      containers:
+        - image: service6:0.1
+          imagePullPolicy: Never
+          name: service6
+          ports:
+            - containerPort: 8080
