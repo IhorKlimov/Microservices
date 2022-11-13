@@ -1,0 +1,86 @@
+microservises:
+
+  client:
+    image:
+      name: client
+      tag: 0.1
+    service:
+      ports:
+        - name: http
+          containerPort: 80
+          port: 80
+    ingress:
+      path: /
+      port: http
+
+  chat:
+    replicaCount: 1
+    image:
+      name: chat
+      tag: 0.1
+    service:
+      ports:
+      - name: http
+        containerPort: 8080
+        port: 80
+    ingress:
+      path: /api/chat
+      port: http
+
+  goods:
+    replicaCount: 1
+    image:
+      name: goods
+      tag: 0.1
+    service:
+      ports:
+        - name: http
+          containerPort: 8080
+          port: 80
+    ingress:
+      path: /api/goods
+      port: http
+
+  notifications:
+    replicaCount: 1
+    image:
+      name: notifications
+      tag: 0.1
+    service:
+      ports:
+        - name: http
+          containerPort: 8080
+          port: 80
+    ingress:
+      path: /api/notifications
+      port: http
+
+  payments:
+    replicaCount: 1
+    image:
+      name: payments
+      tag: 0.1
+    service:
+      ports:
+        - name: http
+          containerPort: 8080
+          port: 80
+    ingress:
+      path: /api/payments
+      port: http
+
+  tracking:
+    replicaCount: 1
+    image:
+      name: tracking
+      tag: 0.1
+    service:
+      ports:
+        - name: http
+          containerPort: 8080
+          port: 80
+    ingress:
+      path: /api/tracking
+      port: http
+
+
