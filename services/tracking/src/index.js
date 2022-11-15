@@ -1,9 +1,17 @@
 const express = require('express');
+const Kafka = require('node-rdkafka');
 const app = express();
 fs = require('fs')
 var bodyParser = require('body-parser')
 
 var jsonParser = bodyParser.json()
+var producer = new Kafka.Producer({
+    'metadata.broker.list': 'kafka:9092',
+    'dr_cb': true
+});
+producer.connect();
+producer.setPollInterval(100);
+
 
 var urlencodedParser = bodyParser.urlencoded({extended: false})
 
@@ -35,6 +43,36 @@ app.post('/api/tracking/save-item-status', async (req, res) => {
             status
         }, {merge: true});
         result = {"result": "Success"};
+
+        const d = await db.collection('orders').doc(orderId).get();
+
+        try {
+            let data = d.data();
+            data["orderId"] = data.id;
+
+            producer.produce(
+                // Topic to send the message to
+                'test',
+                // optionally we can manually specify a partition for the message
+                // this defaults to -1 - which will use librdkafka's default partitioner (consistent random for keyed messages, random for unkeyed messages)
+                null,
+                // Message to send. Must be a buffer
+                Buffer.from(JSON.stringify(data)),
+                // for keyed messages, we also specify the key - note that this field is optional
+                'Stormwind',
+                // you can send a timestamp here. If your broker version supports it,
+                // it will get added. Otherwise, we default to 0
+                Date.now(),
+                // you can send an opaque token here, which gets passed along
+                // to your delivery reports
+            );
+
+        } catch (err) {
+            console.error('A problem occurred when sending our message');
+            console.error(err);
+            res.send("Error" + err);
+        }
+
     } catch (e) {
         result = {"result": "Database is offline. Will retry later"};
     }
@@ -53,6 +91,11 @@ app.get('/api/tracking/get-order-status/:orderId', async (req, res) => {
 
     console.log(snapshot);
     res.send({"messages": result});
+})
+
+producer.on('event.error', function (err) {
+    console.error('Error from producer');
+    console.error(err);
 })
 
 app.listen(port, () => {
