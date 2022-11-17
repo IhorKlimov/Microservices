@@ -6,11 +6,11 @@ from flask import Flask, jsonify, request
 import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
+from kafka import KafkaProducer
+import json
 
 app = Flask(__name__)
 
-# Use the application default credentials.
-# Use a service account.
 cred = credentials.Certificate({
     "type": "service_account",
     "project_id": "microserviceschat",
@@ -35,6 +35,7 @@ successful_card = "4242424242424242"
 failed_card = "4000000000009995"
 requires_authentication = "4000002500003155"
 
+producer = KafkaProducer(bootstrap_servers='kafka:9092')
 
 @app.route("/api/payments/ping")
 def hello_world():
@@ -79,6 +80,11 @@ def complete_payment():
             u'userId': data['userId']
         }
     )
+
+    user_encode_data = json.dumps(data, indent=2).encode('utf-8')
+
+    producer.send('test', user_encode_data)
+    producer.flush()
 
     return 'Done'
 

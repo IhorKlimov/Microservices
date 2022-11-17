@@ -1,4 +1,5 @@
 const express = require('express');
+const Kafka = require('node-rdkafka');
 const app = express();
 fs = require('fs')
 var bodyParser = require('body-parser')
@@ -20,8 +21,35 @@ initializeApp({
 
 const db = getFirestore();
 const port = 8080;
+console.log("here")
+var consumer = new Kafka.KafkaConsumer({
+    'group.id': 'kafka',
+    'metadata.broker.list': 'kafka:9092',
+}, {});
+console.log("here 1")
+
+consumer
+    .on('event.error', function (err) {
+        console.log("error " + err);
+    })
+    .on('ready', function () {
+        console.log("ready")
+        consumer.subscribe(['test']);
+
+        // Consume from the test topic. This is what determines
+        // the mode we are running in. By not specifying a callback (or specifying
+        // only a callback) we get messages as soon as they are available.
+        consumer.consume();
+    })
+    .on('data', function (data) {
+        // Output the actual message contents
+        console.log(data.value.toString());
+        console.log(JSON.parse(data.value.toString()));
+    });
+console.log("here 3")
 
 app.get('/api/goods/ping', (req, res) => {
+    consumer.connect();
     res.send('Hello World!');
 });
 

@@ -1,5 +1,4 @@
-FROM python:3.6
-LABEL maintainer="lorenz.vanthillo@gmail.com"
+FROM python:3.9.13
 
 WORKDIR /
 COPY services/payments services/payments
