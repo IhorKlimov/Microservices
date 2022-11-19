@@ -21,10 +21,10 @@ microservises:
       path: /
       port: http
 
-  chat:
+  movies:
     replicaCount: 1
     image:
-      name: chat
+      name: movies
       tag: 0.1
     service:
       ports:
@@ -32,35 +32,7 @@ microservises:
           containerPort: 8080
           port: 80
     ingress:
-      path: /api/chat
-      port: http
-
-  goods:
-    replicaCount: 1
-    image:
-      name: goods
-      tag: 0.1
-    service:
-      ports:
-        - name: http
-          containerPort: 8080
-          port: 80
-    ingress:
-      path: /api/goods
-      port: http
-
-  notifications:
-    replicaCount: 1
-    image:
-      name: notifications
-      tag: 0.1
-    service:
-      ports:
-        - name: http
-          containerPort: 8080
-          port: 80
-    ingress:
-      path: /api/notifications
+      path: /api/movies
       port: http
 
   payments:
@@ -75,20 +47,6 @@ microservises:
           port: 80
     ingress:
       path: /api/payments
-      port: http
-
-  tracking:
-    replicaCount: 1
-    image:
-      name: tracking
-      tag: 0.1
-    service:
-      ports:
-        - name: http
-          containerPort: 8080
-          port: 80
-    ingress:
-      path: /api/tracking
       port: http
 
 

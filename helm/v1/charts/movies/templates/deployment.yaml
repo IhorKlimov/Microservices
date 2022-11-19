@@ -6,15 +6,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: chat
+      app: movies
   template:
     metadata:
      labels:
-       app: chat
+       app: movies
     spec:
       containers:
-        - image: chat:0.1
+        - image: movies:0.1
           imagePullPolicy: Never
-          name: chat
+          name: movies
           ports:
             - containerPort: 8080

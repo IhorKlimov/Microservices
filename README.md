@@ -10,6 +10,6 @@
     localhost/api/payments/ping
     localhost/api/chat/ping
     localhost/api/notifications/ping
-    localhost/api/goods/ping
+    localhost/api/movies/ping
     localhost/api/tracking/ping
     localhost

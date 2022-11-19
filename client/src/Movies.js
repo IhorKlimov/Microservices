@@ -74,7 +74,7 @@ export default function TitlebarImageList(props) {
 
     function saveToFavorites(movieId, shouldAdd) {
         console.log(movieId, shouldAdd)
-        fetch("/api/goods/save-favorite", {
+        fetch("/api/movies/save-favorite", {
             method: "POST",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(
@@ -99,7 +99,7 @@ export default function TitlebarImageList(props) {
     });
 
     useEffect(() => {
-        fetch("/api/goods/get-items?search=" + props.search + "&category=" + props.category, {
+        fetch("/api/movies/get-items?search=" + props.search + "&category=" + props.category, {
             method: "GET",
             headers: {"Content-Type": "application/json"},
         })
@@ -114,7 +114,7 @@ export default function TitlebarImageList(props) {
     useEffect(() => {
         if (!auth.currentUser) return;
 
-        fetch("/api/goods/get-favorites?userId=" + auth.currentUser.uid, {
+        fetch("/api/movies/get-favorites?userId=" + auth.currentUser.uid, {
             method: "GET",
             headers: {"Content-Type": "application/json"},
         })
@@ -124,7 +124,7 @@ export default function TitlebarImageList(props) {
                 setFavorites(data);
             });
 
-        fetch("/api/goods/get-bought?userId=" + auth.currentUser.uid, {
+        fetch("/api/movies/get-bought?userId=" + auth.currentUser.uid, {
             method: "GET",
             headers: {"Content-Type": "application/json"},
         })

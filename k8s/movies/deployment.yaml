@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}-{{ .Chart.Name }}
+  name: movies-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: notifications
+      app: movies
   template:
     metadata:
      labels:
-       app: notifications
+       app: movies
     spec:
       containers:
-        - image: notifications:0.1
+        - image: movies:0.1
           imagePullPolicy: Never
-          name: notifications
+          name: movies
           ports:
             - containerPort: 8080

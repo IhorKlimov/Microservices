@@ -1,9 +1,9 @@
 FROM node:16.13.1
 
 WORKDIR /
-COPY services/chat services/chat
+COPY services/movies services/movies
 
-WORKDIR /services/chat
+WORKDIR /services/movies
 
 RUN npm install
 EXPOSE 8080

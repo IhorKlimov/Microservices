@@ -8,7 +8,7 @@ spec:
   rules:
     - http:
         paths:
-          - path: /api/tracking
+          - path: /api/movies
             pathType: "Prefix"
             backend:
               service:
