@@ -4,7 +4,9 @@ import {Elements} from "@stripe/react-stripe-js";
 import {initializeApp} from "firebase/app";
 import {getAuth, signInAnonymously, onAuthStateChanged} from "firebase/auth";
 import CheckoutForm from "./CheckoutForm";
-import "./App.css";
+import SearchAppBar from "./SearchAppBar";
+import "./App.css"
+import TitlebarImageList from "./Movies";
 
 const app = initializeApp({
     apiKey: "AIzaSyByVyCIMLVlmMGhV7BdYtKku2IA0uhAxpk",
@@ -18,19 +20,39 @@ const app = initializeApp({
 
 const auth = getAuth(app);
 
-const UNKNOWN = "UNKNOWN"
-const UNAVAILABLE = "UNAVAILABLE"
-// Make sure to call loadStripe outside of a component’s render to avoid
-// recreating the Stripe object on every render.
-// This is your test publishable API key.
-const stripePromise = loadStripe("pk_test_51M1MDYLDgkaqfC6ZXyUZx7KeVKkq2P1iPdTtbFGErWxGc6LTTSa2f4r1nBY12gmsMTgMVDABqJjC4FL60Vs6PvOb00lgWZa3De");
+const genres = [
+    {"id": 28, "name": "Action"},
+    {"id": 12, "name": "Adventure"}, {
+        "id": 16,
+        "name": "Animation"
+    }, {"id": 35, "name": "Comedy"}, {"id": 80, "name": "Crime"}, {"id": 99, "name": "Documentary"}, {
+        "id": 18,
+        "name": "Drama"
+    }, {"id": 10751, "name": "Family"}, {"id": 14, "name": "Fantasy"}, {"id": 36, "name": "History"}, {
+        "id": 27,
+        "name": "Horror"
+    }, {"id": 10402, "name": "Music"}, {"id": 9648, "name": "Mystery"}, {"id": 10749, "name": "Romance"}, {
+        "id": 878,
+        "name": "Science Fiction"
+    }, {"id": 10770, "name": "TV Movie"}, {"id": 53, "name": "Thriller"}, {"id": 10752, "name": "War"}, {
+        "id": 37,
+        "name": "Western"
+    }];
+
 
 function App() {
-    const [paymentsstate, paymentsSetState] = useState(UNKNOWN);
-    const [chatstate, chatSetState] = useState(UNKNOWN);
-    const [currentUser, setCurrentUser] = useState(UNKNOWN);
-    const [clientSecret, setClientSecret] = useState("");
-    const [orderId, setOrderId] = useState("");
+    const [search, setSearch] = useState();
+    const [category, setCategory] = useState();
+
+    function onSearch(value) {
+        console.log("search")
+        setSearch(value);
+    }
+
+    function onCategorySelected(categoryId) {
+        console.log(categoryId);
+        setCategory(categoryId);
+    }
 
     signInAnonymously(auth)
         .then(() => {
@@ -42,72 +64,10 @@ function App() {
             console.log(errorCode + " " + errorMessage);
         });
 
-    onAuthStateChanged(auth, (user) => {
-        if (user) {
-            const uid = user.uid;
-            console.log("Logged in user " + uid);
-            setCurrentUser(uid);
-        } else {
-            // User is signed out
-            console.log("Not logged in");
-        }
-    });
-
-    useEffect(() => {
-        // Create PaymentIntent as soon as the page loads
-        fetch("/api/payments/create-payment-intent", {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({items: [{id: "xl-tshirt"}]}),
-        })
-            .then((res) => res.json())
-            .then((data) => {
-                setOrderId(data.orderId);
-                setClientSecret(data.clientSecret);
-            });
-    }, []);
-
-    const appearance = {
-        theme: 'stripe',
-    };
-    const options = {
-        clientSecret,
-        appearance,
-    };
-
-    useEffect(() => {
-        fetch('/api/payments/ping')
-            .then((response) => {
-                return response.text();
-            })
-            .then((data) => {
-                paymentsSetState(data);
-            }).catch(() => {
-            paymentsSetState(UNAVAILABLE)
-        });
-    }, []);
-
-    useEffect(() => {
-        fetch('/api/chat/ping')
-            .then((response) => {
-                return response.text();
-            })
-            .then((data) => {
-                chatSetState(data);
-            }).catch(() => {
-            chatSetState(UNAVAILABLE)
-        });
-    }, []);
-
     return (
         <div className="App">
-            payments status: {paymentsstate}<br/>
-            chat status: {chatstate}
-            {clientSecret && (
-                <Elements options={options} stripe={stripePromise}>
-                    <CheckoutForm orderId={orderId} auth={currentUser}/>
-                </Elements>
-            )}
+            <SearchAppBar onSearch={onSearch} genres={genres} onCategorySelected={onCategorySelected}/>
+            <TitlebarImageList search={search} genres={genres} category={category}/>
         </div>
     );
 }

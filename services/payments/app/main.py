@@ -9,6 +9,8 @@ from firebase_admin import firestore
 from kafka import KafkaProducer
 import json
 
+from flask_cors import cross_origin
+
 app = Flask(__name__)
 
 cred = credentials.Certificate({
@@ -38,25 +40,19 @@ requires_authentication = "4000002500003155"
 producer = KafkaProducer(bootstrap_servers='kafka:9092')
 
 @app.route("/api/payments/ping")
+@cross_origin()
 def hello_world():
-    doc_ref = db.collection(u'orders').document(u'123')
-
-    doc = doc_ref.get()
-    if doc.exists:
-        print(f'Document data: {doc.to_dict()}')
-    else:
-        print(u'No such document!')
-
     return "Hello, World!"
 
-
 @app.route("/api/payments/create-payment-intent", methods=["POST"])
+@cross_origin()
 def create_payment():
     try:
         data = json.loads(request.data)
-        # Create a PaymentIntent with the order amount and currency
+        price = calculate_order_amount(data['movieId'])
+
         intent = stripe.PaymentIntent.create(
-            amount=calculate_order_amount(data['items']),
+            amount=price,
             currency='cad',
             automatic_payment_methods={
                 'enabled': True,
@@ -64,24 +60,29 @@ def create_payment():
         )
         return jsonify({
             'clientSecret': intent['client_secret'],
-            'orderId': uuid.uuid4()
+            'movieId': data['movieId'],
+            'price': price
         })
     except Exception as e:
         return jsonify(error=str(e)), 403
 
 
 @app.route("/api/payments/complete-payment", methods=["POST"])
+@cross_origin()
 def complete_payment():
+    print("complete")
     data = json.loads(request.data)
 
-    db.collection(u'orders').document(data['orderId']).set(
-        {
-            u'status': u'orderCreated',
-            u'userId': data['userId']
-        }
-    )
-
     user_encode_data = json.dumps(data, indent=2).encode('utf-8')
+
+    user_id = data['userId']
+    movie_id = str(data['movieId'])
+
+#     db.collection(u'bought').document(u'users').collection(user_id).document(movie_id).set(
+#         {
+#             u'bought': True,
+#         }
+#     )
 
     producer.send('test', user_encode_data)
     producer.flush()
@@ -89,11 +90,8 @@ def complete_payment():
     return 'Done'
 
 
-def calculate_order_amount(items):
-    # Replace this constant with a calculation of the order"s amount
-    # Calculate the order total on the server to prevent
-    # people from directly manipulating the amount on the client
-    return 1400
+def calculate_order_amount(movie_id):
+    return db.collection(u'items').document(movie_id).get().to_dict()["item"]["price"]
 
 
 if __name__ == "__main__":
